@@ -1,0 +1,88 @@
+# remove "version:"; it's obsolete in compose v2+
+name: skillsync
+
+services:
+  db:
+    image: mysql:8
+    container_name: skillsync-db
+    environment:
+      MYSQL_DATABASE: skillsync
+      MYSQL_USER: skillsync
+      MYSQL_PASSWORD: skillsync
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-pskillsync"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+  php:
+    build: ./docker/php-fpm
+    container_name: skillsync-php
+    working_dir: /var/www/html
+    volumes:
+      - ../api:/var/www/html
+    environment:
+      APP_ENV: local
+    depends_on:
+      db:
+        condition: service_healthy
+    # optional healthcheck: php-fpm ready
+    healthcheck:
+      test: ["CMD-SHELL", "php -v >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  webdev:
+    image: node:20-alpine
+    container_name: skillsync-web
+    working_dir: /app
+    command: sh -lc "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../web:/app
+    # no dependency on php/db
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5173/ >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+
+  nginx:
+    build: ./docker/nginx
+    container_name: skillsync-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../api/public:/var/www/html/public:ro
+    depends_on:
+      php:
+        condition: service_healthy
+      webdev:
+        condition: service_started
+    # optional healthcheck: nginx up
+    healthcheck:
+      test: ["CMD-SHELL", "nginx -t || exit 1"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  db_data:
