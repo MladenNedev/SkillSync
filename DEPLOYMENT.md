@@ -1,111 +1,216 @@
-# SkillSync – Deployment Plan
+# SkillSync - Deployment & Local Development Guide
 
-This document describes how to run SkillSync using Docker.
+This guide explains how to run SkillSync locally with Docker and how to prepare it for production deployment.
+
+SkillSync consists of:
+
+- **api/** - Laravel 12 API (PHP 8.3, MySQL, Sanctum)
+- **web/** - Vue 3 SPA (Vite)
+- **infra/** - Docker Compose stack (Nginx, PHP-FPM, MySQL, phpMyAdmin)
 
 ---
 
-1. Prerequisites
-	•	Docker + Docker Compose installed
-	•	Node 20+ and npm (if you want to run Vue outside the container)
+## 1. Prerequisites
 
-2. Clone the repo
+Install the following before booting the stack:
 
-3. Configure Laravel .env (dev)
+- Docker Desktop (or Docker Engine)
+- Docker Compose
+- Node.js 20+
+- Git
 
-Inside /api :
+> You do **not** need PHP or Composer installed locally when using Docker.
 
-  cp .env.example .env 
+---
 
-Update important lines to update docker envrionment:
+## 2. Project Structure
 
-    APP_NAME=SkillSync
-    APP_ENV=local
-    APP_URL=http://localhost:8080
+```text
+/api        → Laravel backend (REST API)
+/web        → Vue.js frontend (Vite)
+/infra      → Docker environment (nginx + php-fpm + mysql + phpmyadmin)
+```
 
-    DB_CONNECTION=mysql
-    DB_HOST=db
-    DB_PORT=3306
-    DB_DATABASE=skillsync
-    DB_USERNAME=skillsync
-    DB_PASSWORD=skillsync
+---
 
-    FRONTEND_URL=http://localhost:5173
-    SANCTUM_STATEFUL_DOMAINS=localhost,localhost:5173
-    SESSION_DOMAIN=localhost
+## 3. Start the Local Environment
 
-4. Start the dev stack with Docker
+From the project root:
 
-    From the /infra directory
+```bash
+cd infra
+docker compose up -d
+```
 
-    -- cd infra
-    -- docker compose up -d
+Services:
 
-This starts:
-    - MySQL (db)
-    - PHP (Laravel)
-    - nginx
-    - webdev (Vue dev server)
-    - phpMyAdmin
+- API → http://localhost:8080
+- phpMyAdmin → http://localhost:8081
+- MySQL → port 3306
+- Vue SPA → http://localhost:5173 (when started)
 
-5. Generate app key + migrate database
+---
 
-    docker compose exec php sh
-    cd /var/www/html
+## 4. Laravel API Setup
 
-    php artisan key:generate
-    php artisan migrate:fresh --seed
+### 4.1 Create the `.env` File
 
-This sets up:
-    - App encryption key
-    - All tables
-    - Seed data (including a demo user)
+Inside `api/`:
 
-6. Access the app
-    - SPA (dev): http://localhost:5173
-    - API via nginx: http://localhost:8080
-    - phpMyAdmin: http://localhost:8081 (host depends on compose config)
+```bash
+cd api
+cp .env.example .env
+```
 
-Demo Login: 
-    Email:    demo@skillsync.test
-    Password: password
+Then update `.env` with:
 
-Flow:
-1.	Go to http://localhost:5173/login
-2.	Login with the demo credentials
-3.	The frontend hits:
-    - GET /sanctum/csrf-cookie
-    - POST /login
-    - GET /api/user
-4.	After that, authenticated calls to /api/dashboard/* are allowed.
+```
+APP_NAME=SkillSync
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8080
 
-⸻
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=skillsync
+DB_USERNAME=skillsync
+DB_PASSWORD=skillsync
 
-API Endpoints (Current)
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+SESSION_DOMAIN=localhost
+```
 
-Auth / User
-    -   GET /sanctum/csrf-cookie
-Initialize CSRF cookies for SPA auth.
-    -   POST /login
-Session-based login via Sanctum.
-    -   POST /logout
-(Available via Breeze API stack.)
-    -   GET /api/user
-Returns the currently authenticated user.
-Middleware: auth:sanctum.
+### 4.2 Generate `APP_KEY`
 
-----
+```bash
+docker compose exec php sh -lc "cd /var/www/html && php artisan key:generate"
+```
 
-Dashboard
+### 4.3 Run Migrations & Seeders
 
-All require authentication (auth:sanctum):
-    -   GET /api/dashboard/summary
-Returns cards for:
-    -   courses in progress
-    -   completed courses
-    -   completed challenges
-    -   time spent today
-    -   GET /api/dashboard/chart
-Returns weekly chart data for study sessions (courses vs challenges).
-    -   GET /api/dashboard/recent-courses
-Returns a list of recently active courses for the user.
+```bash
+docker compose exec php sh -lc "cd /var/www/html && php artisan migrate --seed"
+```
 
+---
+
+## 5. Running Laravel Commands
+
+Enter the PHP container:
+
+```bash
+docker compose exec php sh
+cd /var/www/html
+```
+
+Examples:
+
+- `php artisan migrate`
+- `php artisan tinker`
+- `php artisan route:list`
+- `php artisan test`
+
+---
+
+## 6. Vue Frontend Setup
+
+Inside `web/`:
+
+```bash
+cd web
+npm install
+```
+
+Start the Vite dev server:
+
+```bash
+npm run dev
+```
+
+The SPA runs at http://localhost:5173. It talks to the API using the base URL defined in `web/.env`.
+
+---
+
+## 7. Web `.env` Configuration
+
+Inside `web/`:
+
+```bash
+cp .env.example .env
+```
+
+Minimal required content:
+
+```
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+This value is referenced in `web/src/api/http.js` as the Axios base URL.
+
+---
+
+## 8. Production Deployment (High-Level)
+
+A typical deployment:
+
+1. Build the SPA:
+   ```bash
+   cd web
+   npm install
+   npm run build
+   ```
+   Outputs static assets to `web/dist`.
+2. Serve the built SPA with Nginx or a static hosting provider.
+3. Deploy the Laravel API (`api/`) behind Nginx + PHP-FPM with:
+   - Managed MySQL database
+   - Hosting-provided environment variables
+   - `APP_ENV=production`, `APP_DEBUG=false`
+4. Run database migrations in production:
+   ```bash
+   php artisan migrate --force
+   ```
+
+Exact hosting (Forge, Vapor, Docker on VPS, etc.) can vary, but the Docker setup in `infra/` is a good starting point.
+
+---
+
+## 9. Troubleshooting
+
+### 9.1 419 / CSRF or Login Issues
+
+Ensure `api/.env` includes:
+
+```
+APP_URL=http://localhost:8080
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+SESSION_DOMAIN=localhost
+```
+
+Then clear caches:
+
+```bash
+docker compose exec php php artisan config:clear
+docker compose exec php php artisan cache:clear
+docker compose exec php php artisan route:clear
+```
+
+### 9.2 Database Not Updating
+
+If migrations or seeders change:
+
+```bash
+docker compose exec php sh -lc "cd /var/www/html && php artisan migrate:fresh --seed"
+```
+
+---
+
+## 10. Summary
+
+- Docker runs MySQL, PHP-FPM, Nginx, and phpMyAdmin.
+- Laravel API is accessible at http://localhost:8080.
+- Vue SPA runs via Vite at http://localhost:5173.
+- Auth uses Laravel Sanctum with cookie-based sessions.
+- Environment configuration lives in `api/.env` and `web/.env`.
+
+SkillSync is now ready for local development and can be extended toward a production deployment.

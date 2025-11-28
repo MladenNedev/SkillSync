@@ -7,7 +7,7 @@ export async function login(email, password) {
     // Login
     await http.post('/login', {
         email,
-        password,
+        password
     });
     // If successful, browser now has a session cookie
 }

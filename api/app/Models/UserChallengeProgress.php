@@ -21,6 +21,12 @@ class UserChallengeProgress extends Model
         'completed_at',
     ];
 
+    protected $casts = [
+        'last_accessed_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'total_minutes_spent' => 'integer'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

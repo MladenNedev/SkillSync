@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\DemoDataSeeder;
+use Database\Seeders\DemoSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(DemoDataSeeder::class);
+        $this->call(DemoSeeder::class);
     }
 }

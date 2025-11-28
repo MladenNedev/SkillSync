@@ -25,4 +25,10 @@ class Challenge extends Model
     {
         return $this->hasMany(StudySession::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_challenge_progress')
+                    ->withPivot(['status','progress_percent','last_accessed_at','total_minutes_spent','completed_at']);
+    }
 }
