@@ -1,114 +1,250 @@
 # SkillSync
 
-SkillSync is a full-stack learning tracker focused on web-dev studies.  
-Stack: **Laravel API + Vue 3 SPA + Docker + MySQL + Sanctum (session-based auth)**.
-
-Right now the focus is on:
-- A clean, realistic architecture (API + SPA + Docker)
-- Proper authentication flow using Laravel Sanctum
-- A dashboard that summarizes study time, course progress, and challenges
+SkillSync is a full-stack study-tracking platform designed to measure learning progress, visualize productivity trends, and help users build consistent study habits.  
+It follows a modern architecture built on **Laravel 12 (API)**, **Vue 3 (SPA)**, and a **Docker-based infrastructure** mirroring production environments.
 
 ---
 
-## Features (Current Status)
+## 1. Overview
 
-- **Dockerized dev environment**
-  - `db` – MySQL 8
-  - `php` – Laravel (PHP-FPM)
-  - `nginx` – reverse proxy + API gateway
-  - `webdev` – Vue 3 dev server (Vite)
-  - `phpmyadmin` – DB inspection
+SkillSync provides:
 
-- **Authentication**
-  - Laravel Breeze API stack
-  - Sanctum SPA authentication (stateful, cookie-based)
-  - CSRF flow: `/sanctum/csrf-cookie` → `/login` → `/api/user`
-  - Protected routes via `auth:sanctum`
+- A secure API for authentication and study-session analytics  
+- A responsive SPA dashboard for daily and weekly insights  
+- A production-like Docker environment (Nginx, PHP-FPM, MySQL)
 
-- **Domain & Data Model**
-  - Users (with `username`)
-  - Courses
-  - Challenges
-  - UserCourseProgress
-  - UserChallengeProgress
-  - StudySessions
-  - All relationships modeled with Eloquent
-
-- **Dashboard Backend**
-  - `GET /api/dashboard/summary`
-  - `GET /api/dashboard/chart`
-  - `GET /api/dashboard/recent-courses`
-  - Logic implemented in a dedicated `DashboardService`
-
-- **Frontend API Layer (in progress)**
-  - Shared Axios client with CSRF + cookies configured
-  - `auth.js` for login + current user
-  - `dashboard.js` for dashboard endpoints
-  - Login page already authenticates against the real API
+This project demonstrates strong fundamentals in **API design**, **modular service architecture**, **stateful SPA authentication**, and **frontend data visualization**.
 
 ---
 
-## Tech Stack
+## 2. Tech Stack
 
-**Backend**
+### Backend (API)
 - PHP 8.3
-- Laravel (API-only usage)
+- Laravel 12 (Sanctum auth, Eloquent ORM)
 - MySQL 8
-- Laravel Breeze (API)
-- Laravel Sanctum
+- API-first service layer
 
-**Frontend**
-- Vue 3
+### Frontend (SPA)
+- Vue 3 (Composition API)
 - Vite
 - Axios
+- Chart.js
 
-**Infra / Tooling**
-- Docker + Docker Compose
-- Nginx as reverse proxy
-- phpMyAdmin for DB inspection
-
----
-
-Project Structure (Backend Focus)
-
-api/
-├── app/
-│   ├── Http/Controllers/        # DashboardController, Auth controllers
-│   ├── Models/                  # User, Course, Challenge, Progress, StudySession
-│   └── Services/                # DashboardService (aggregation logic)
-├── database/
-│   ├── migrations/              # All schema definitions
-│   └── seeders/                 # Demo data, test users
-├── routes/
-│   ├── api.php                  # /api/* routes (auth:sanctum + dashboard)
-│   └── web.php                  # Not heavily used (SPA handles frontend)
-└── ...
-
-Frontend pieces:
-
-web/
-├── src/
-│   ├── api/
-│   │   ├── http.js              # Axios instance (CSRF + cookies)
-│   │   ├── auth.js              # login + /api/user wrapper
-│   │   └── dashboard.js         # dashboard API wrappers
-│   ├── pages/
-│   │   ├── Login.vue
-│   │   └── Dashboard.vue
-│   └── components/
-│       └── Nav.vue              # Shared navigation
-└── ...
+### Infrastructure
+- Docker & Docker Compose
+- Nginx
+- PHP-FPM
+- phpMyAdmin
 
 ---
 
-Roadmap / Next Steps
-    -   Frontend
-    -   Finish wiring Dashboard.vue to real dashboard API responses
-    -   Add charts (e.g. using Chart.js or similar)
-    -   Improve responsive layout & design
-    -   Backend
-    -   Add more detailed tracking (per-task, per-course stats)
-    -   Add endpoints for creating/updating study sessions and progress
-    -   DevOps (later)
-    -   Basic CI pipeline (GitHub Actions: test + build)
-    -   Simple deployment strategy described in DEPLOYMENT.md (planned)
+## 3. Features
+
+### Authentication
+- Sanctum stateful SPA login
+- CSRF-protected flows via `/sanctum/csrf-cookie`
+- Secure session-based API access
+
+### Dashboard
+- Weekly bar-chart of study hours (Mon → Sun)
+- Daily KPIs:
+  - Courses in progress
+  - Completed courses
+  - Completed challenges
+  - Time-spent today (H/M)
+- Recent Courses (latest 3 with fallback image)
+
+### Domain Model
+Includes:
+- Users  
+- Courses  
+- Challenges  
+- StudySessions  
+- UserCourseProgress  
+- UserChallengeProgress  
+
+All modeled cleanly through Eloquent.
+
+---
+
+## 4. Project Structure
+
+# SkillSync
+
+SkillSync is a full-stack study-tracking platform designed to measure learning progress, visualize productivity trends, and help users build consistent study habits.  
+It follows a modern architecture built on **Laravel 12 (API)**, **Vue 3 (SPA)**, and a **Docker-based infrastructure** mirroring production environments.
+
+---
+
+## 1. Overview
+
+SkillSync provides:
+
+- A secure API for authentication and study-session analytics  
+- A responsive SPA dashboard for daily and weekly insights  
+- A production-like Docker environment (Nginx, PHP-FPM, MySQL)
+
+This project demonstrates strong fundamentals in **API design**, **modular service architecture**, **stateful SPA authentication**, and **frontend data visualization**.
+
+---
+
+## 2. Tech Stack
+
+### Backend (API)
+- PHP 8.3
+- Laravel 12 (Sanctum auth, Eloquent ORM)
+- MySQL 8
+- API-first service layer
+
+### Frontend (SPA)
+- Vue 3 (Composition API)
+- Vite
+- Axios
+- Chart.js
+
+### Infrastructure
+- Docker & Docker Compose
+- Nginx
+- PHP-FPM
+- phpMyAdmin
+
+---
+
+## 3. Features
+
+### Authentication
+- Sanctum stateful SPA login
+- CSRF-protected flows via `/sanctum/csrf-cookie`
+- Secure session-based API access
+
+### Dashboard
+- Weekly bar-chart of study hours (Mon → Sun)
+- Daily KPIs:
+  - Courses in progress
+  - Completed courses
+  - Completed challenges
+  - Time-spent today (H/M)
+- Recent Courses (latest 3 with fallback image)
+
+### Domain Model
+Includes:
+- Users  
+- Courses  
+- Challenges  
+- StudySessions  
+- UserCourseProgress  
+- UserChallengeProgress  
+
+All modeled cleanly through Eloquent.
+
+---
+
+## 4. Project Structure
+
+SkillSync/
+├── api/                # Laravel API
+│   ├── app/
+│   ├── database/
+│   └── routes/
+│
+├── web/                # Vue SPA
+│   ├── src/api
+│   ├── src/components
+│   └── src/pages
+│
+└── infra/              # Docker infrastructure
+├── nginx
+├── php
+├── mysql
+└── docker-compose.yml
+
+---
+
+## 5. Local Development Setup
+
+### Start the Docker environment
+
+```bash
+cd infra
+docker compose up -d
+
+Service
+URL
+Laravel API
+http://localhost:8080
+phpMyAdmin
+http://localhost:8081
+Vue SPA
+http://localhost:5173
+
+6. Laravel Setup
+
+cd api
+cp .env.example .env
+
+Update environment variables, then run:
+
+docker compose exec php sh -lc "cd /var/www/html && php artisan key:generate"
+docker compose exec php sh -lc "cd /var/www/html && php artisan migrate --seed"
+
+7. Frontend Setup 
+
+cd web
+cp .env.example .env
+npm install
+npm run dev
+
+Ensure the SPA .env contains:
+VITE_API_BASE_URL=http://localhost:8080
+
+8. Deployment Overview
+	1.	Build the frontend (npm run build)
+	2.	Deploy the compiled web/dist to Nginx or any static host
+	3.	Deploy api/ to a production PHP-FPM environment
+	4.	Set production .env values
+	5.	Run migrations: 
+    php artisan migrate --force
+
+    9. Troubleshooting
+
+CSRF/Login issues
+
+Check Laravel .env:
+SESSION_DOMAIN=localhost
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+APP_URL=http://localhost:8080
+Reset caches:
+docker compose exec php php artisan config:clear
+docker compose exec php php artisan cache:clear
+docker compose exec php php artisan route:clear
+
+10. Roadmap
+
+In Progress
+	•	UI polishing
+	•	Course/challenge CRUD
+
+Upcoming
+	•	GitHub Actions CI (Pint, PHPStan, ESLint, Prettier)
+	•	Production Docker build
+	•	Full UX enhancements and analytics
+
+⸻
+
+11. Screenshots
+
+(Add after implementation)
+
+Recommended images:
+	•	/screenshots/dashboard.png – main dashboard with chart + KPIs
+	•	/screenshots/login.png – login screen
+	•	/screenshots/recent-courses.png – recent courses UI
+	•	/screenshots/api-architecture.png – optional architecture diagram
+
+    ![Dashboard](screenshots/dashboard.png)
+![Recent Courses](screenshots/recent-courses.png)
+
+License
+
+MIT
