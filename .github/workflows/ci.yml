@@ -44,16 +44,35 @@ jobs:
             composer-
 
       - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
+        run: composer install --no-interaction  --no-progress --preffer-dist --no-ansi
 
       - name: Copy .env
         run: |
           if [ ! -f .env ]; then
-            cp .env.example .env
+            if [ -f .env.example ]; then
+              cp .env.example .env
+            else
+              echo "No .env.example found, generating minimal CI .env"
+              cat > .env  << 'EOF'
+APP_NAME=SkillSync
+APP_ENV=testing
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=sqlite
+DB_DATABASE=:memory:
+
+CACHE_DRIVER=array
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=array
+SESSION_LIFETIME=120
+EOF
+            fi
           fi
 
       - name: Generate app key
-        run: php artisan key:generate
+        run: php artisan key:generate --no-ansi
 
       - name: Run Pint (code style)
         run: ./vendor/bin/pint --test
@@ -76,7 +95,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
 
