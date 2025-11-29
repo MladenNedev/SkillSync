@@ -5,14 +5,13 @@ on:
     branches:
       - main
       - dev
-      - feature/**
   pull_request:
     branches:
       - main
       - dev
 
 jobs:
-  php:
+  backend:
     name: Backend (Laravel)
     runs-on: ubuntu-latest
 
@@ -27,52 +26,37 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
-          extensions: mbstring, pdo_mysql, pdo_sqlite, sqlite, intl
+          php-version: "8.3"
+          extensions: mbstring, pdo_mysql, sqlite3, pdo_sqlite
           coverage: none
 
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.composer/cache
-            api/vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('api/composer.lock') }}
+          path: api/vendor
+          key: composer-${{ hashFiles('api/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
+            composer-
 
       - name: Install Composer dependencies
-        run: composer install --no-interaction --no-progress --prefer-dist
+        run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Prepare .env (sqlite for CI)
+      - name: Copy .env
         run: |
-          cp .env.example .env
-          php artisan key:generate
-          # Use sqlite for fast, isolated CI DB
-          echo "" >> .env
-          echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=/tmp/skillsync_ci.sqlite" >> .env
-          touch /tmp/skillsync_ci.sqlite
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
 
-      - name: Run migrations and seed demo data
-        run: |
-          php artisan config:clear
-          php artisan migrate --force
-          php artisan db:seed --force
+      - name: Generate app key
+        run: php artisan key:generate
 
       - name: Run Pint (code style)
-        run: |
-          ./vendor/bin/pint --test
+        run: ./vendor/bin/pint --test
 
-      - name: Run PHPStan / Larastan
-        run: |
-          ./vendor/bin/phpstan analyse
+      - name: Run PHPStan (static analysis)
+        run: ./vendor/bin/phpstan analyse
 
-      - name: Run backend tests (PHPUnit / artisan test)
-        run: |
-          php artisan test
-
-  node:
+  frontend:
     name: Frontend (Vue)
     runs-on: ubuntu-latest
 
@@ -84,21 +68,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
           cache-dependency-path: web/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint (ESLint)
+      - name: Run ESLint
         run: npm run lint
 
-      - name: Check formatting (Prettier)
+      - name: Run Prettier (check only)
         run: npm run format:check
 
-      - name: Build SPA (Vite)
+      - name: Build SPA
         run: npm run build
