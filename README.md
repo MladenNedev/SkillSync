@@ -71,20 +71,24 @@ All modeled cleanly through Eloquent.
 ## 4. Project Structure
 
 SkillSync/
-├── api/                # Laravel API
+
+# Backend — Laravel API
+├── api/
 │   ├── app/
 │   ├── database/
 │   └── routes/
-│
-├── web/                # Vue SPA
-│   ├── src/api
-│   ├── src/components
-│   └── src/pages
-│
-└── infra/              # Docker infrastructure
-    ├── nginx
-    ├── php
-    ├── mysql
+
+# Frontend — Vue 3 SPA
+├── web/
+│   ├── src/api/
+│   ├── src/components/
+│   └── src/pages/
+
+# Docker Infrastructure
+└── infra/
+    ├── nginx/
+    ├── php/
+    ├── mysql/
     └── docker-compose.yml
 
 ---
