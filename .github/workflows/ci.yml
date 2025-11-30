@@ -53,21 +53,21 @@ jobs:
               cp .env.example .env
             else
               echo "No .env.example found, generating minimal CI .env"
-              cat > .env  << 'EOF'
-APP_NAME=SkillSync
-APP_ENV=testing
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost
-
-DB_CONNECTION=sqlite
-DB_DATABASE=:memory:
-
-CACHE_DRIVER=array
-QUEUE_CONNECTION=sync
-SESSION_DRIVER=array
-SESSION_LIFETIME=120
-EOF
+              printf "%s\n" \
+                "APP_NAME=SkillSync" \
+                "APP_ENV=testing" \
+                "APP_KEY=" \
+                "APP_DEBUG=true" \
+                "APP_URL=http://localhost" \
+                "" \
+                "DB_CONNECTION=sqlite" \
+                "DB_DATABASE=:memory:" \
+                "" \
+                "CACHE_DRIVER=array" \
+                "QUEUE_CONNECTION=sync" \
+                "SESSION_DRIVER=array" \
+                "SESSION_LIFETIME=120" \
+                > .env
             fi
           fi
 
