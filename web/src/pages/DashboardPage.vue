@@ -1,87 +1,87 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { fetchSummary, fetchChart, fetchRecentCourses } from "../api/dashboard";
-import DashboardChart from "../components/DashboardChart.vue";
-import placeholderImage from "../assets/course-placeholder.png";
+import { ref, onMounted, computed } from 'vue'
+import { fetchSummary, fetchChart, fetchRecentCourses } from '../api/dashboard'
+import DashboardChart from '../components/DashboardChart.vue'
+import placeholderImage from '../assets/course-placeholder.png'
 
-const summary = ref(null);
-const chartData = ref(null);
-const recentCourses = ref([]);
-const loading = ref(true);
-const error = ref(null);
+const summary = ref(null)
+const chartData = ref(null)
+const recentCourses = ref([])
+const loading = ref(true)
+const error = ref(null)
 
 function formatMinutesToHoursMinutes(totalMinutes) {
-  if (totalMinutes == null) return "00 h 00 m";
+  if (totalMinutes == null) return '00 h 00 m'
 
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
 
-  const paddedHours = String(hours).padStart(2, "0");
-  const paddedMinutes = String(minutes).padStart(2, "0");
+  const paddedHours = String(hours).padStart(2, '0')
+  const paddedMinutes = String(minutes).padStart(2, '0')
 
-  return `${paddedHours} h ${paddedMinutes} m`;
+  return `${paddedHours} h ${paddedMinutes} m`
 }
 
 const formattedTimeSpentToday = computed(() => {
-  if (!summary.value) return "00 h 00 m";
+  if (!summary.value) return '00 h 00 m'
 
-  const minutes = summary.value.stats.time_spent_today_minutes;
-  return formatMinutesToHoursMinutes(minutes);
-});
+  const minutes = summary.value.stats.time_spent_today_minutes
+  return formatMinutesToHoursMinutes(minutes)
+})
 
 onMounted(async () => {
-  loading.value = true;
-  error.value = null;
+  loading.value = true
+  error.value = null
 
   try {
     const [summaryRes, chartRes, recentRes] = await Promise.all([
       fetchSummary(),
       fetchChart(),
       fetchRecentCourses(),
-    ]);
+    ])
 
-    summary.value = summaryRes;
-    recentCourses.value = recentRes.data;
+    summary.value = summaryRes
+    recentCourses.value = recentRes.data
 
-    console.log("Chart data from API (raw):", chartRes);
+    console.log('Chart data from API (raw):', chartRes)
 
     // ----- Build fixed Monday → Sunday week -----
-    const start = new Date(summaryRes.weekly.range.start); // Monday of the week
-    const labels = [];
-    const courseHours = [];
-    const challengeHours = [];
-    const allHours = [...courseHours, ...challengeHours];
-    const maxHours = Math.max(...allHours, 0);
+    const start = new Date(summaryRes.weekly.range.start) // Monday of the week
+    const labels = []
+    const courseHours = []
+    const challengeHours = []
+    const allHours = [...courseHours, ...challengeHours]
+    const maxHours = Math.max(...allHours, 0)
 
-    let yMax;
+    let yMax
     if (maxHours <= 1.5) {
-      yMax = 2;
+      yMax = 2
     } else if (maxHours <= 3) {
-      yMax = 4;
+      yMax = 4
     } else if (maxHours <= 5) {
-      yMax = 6;
+      yMax = 6
     } else {
-      yMax = 8;
+      yMax = 8
     }
 
-    const days = chartRes.days ?? []; // adjust if your key is different
+    const days = chartRes.days ?? [] // adjust if your key is different
 
-    const shortNames = ["M", "T", "W", "T", "F", "S", "S"];
+    const shortNames = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 
     for (let i = 0; i < 7; i++) {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
+      const d = new Date(start)
+      d.setDate(start.getDate() + i)
 
-      labels.push(shortNames[i]);
+      labels.push(shortNames[i])
 
-      const iso = d.toISOString().split("T")[0]; // <-- lowercase split
-      const entry = days.find((x) => x.date === iso);
+      const iso = d.toISOString().split('T')[0] // <-- lowercase split
+      const entry = days.find((x) => x.date === iso)
 
-      const courseMinutes = entry?.course_minutes ?? 0; // adjust field names
-      const challengeMinutes = entry?.challenge_minutes ?? 0;
+      const courseMinutes = entry?.course_minutes ?? 0 // adjust field names
+      const challengeMinutes = entry?.challenge_minutes ?? 0
 
-      courseHours.push(Number((courseMinutes / 60).toFixed(2)));
-      challengeHours.push(Number((challengeMinutes / 60).toFixed(2)));
+      courseHours.push(Number((courseMinutes / 60).toFixed(2)))
+      challengeHours.push(Number((challengeMinutes / 60).toFixed(2)))
     }
 
     chartData.value = {
@@ -89,16 +89,16 @@ onMounted(async () => {
       course_hours: courseHours,
       challenge_hours: challengeHours,
       yMax,
-    };
+    }
 
-    console.log("Chart data shaped for chart:", chartData.value);
+    console.log('Chart data shaped for chart:', chartData.value)
   } catch (e) {
-    console.error("Failed to load dashboard", e);
-    error.value = "Failed to load dashboard data. Please try again.";
+    console.error('Failed to load dashboard', e)
+    error.value = 'Failed to load dashboard data. Please try again.'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-});
+})
 </script>
 
 <template>
@@ -192,9 +192,7 @@ onMounted(async () => {
               </div>
               <div class="kpi-item">
                 <span>Average hours per day</span>
-                <strong>{{
-                  summary.weekly.average_hours_per_day.toFixed(2)
-                }}</strong>
+                <strong>{{ summary.weekly.average_hours_per_day.toFixed(2) }}</strong>
               </div>
               <div class="kpi-item">
                 <span>Course hours this week</span>
@@ -216,15 +214,8 @@ onMounted(async () => {
             </header>
 
             <div class="recent-courses-box_items">
-              <div
-                v-for="course in recentCourses"
-                :key="course.id"
-                class="course-item"
-              >
-                <img
-                  :src="course.image_url ?? placeholderImage"
-                  class="course-item_image"
-                />
+              <div v-for="course in recentCourses" :key="course.id" class="course-item">
+                <img :src="course.image_url ?? placeholderImage" class="course-item_image" />
                 <div>
                   <h3>{{ course.title }}</h3>
                   <p>{{ course.author }}</p>

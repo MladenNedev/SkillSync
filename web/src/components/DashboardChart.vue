@@ -1,54 +1,54 @@
 <script setup>
 defineOptions({
-  name: "DashboardChart"
-});
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
-import { Chart, registerables } from "chart.js";
+  name: 'DashboardChart',
+})
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { Chart, registerables } from 'chart.js'
 
-Chart.register(...registerables);
+Chart.register(...registerables)
 
 const props = defineProps({
   chartData: {
     type: Object,
     required: true,
   },
-});
+})
 
-const yMax = props.chartData.yMax ?? 8;
+const yMax = props.chartData.yMax ?? 8
 
-const canvasRef = ref(null);
-let chartInstance = null;
+const canvasRef = ref(null)
+let chartInstance = null
 
 function createChart() {
-  if (!canvasRef.value || !props.chartData) return;
+  if (!canvasRef.value || !props.chartData) return
 
   if (chartInstance) {
-    chartInstance.destroy();
+    chartInstance.destroy()
   }
 
-  const ctx = canvasRef.value.getContext("2d");
+  const ctx = canvasRef.value.getContext('2d')
 
-  const labels = props.chartData.labels ?? [];
-  const courseHours = props.chartData.course_hours ?? [];
-  const challengeHours = props.chartData.challenge_hours ?? [];
+  const labels = props.chartData.labels ?? []
+  const courseHours = props.chartData.course_hours ?? []
+  const challengeHours = props.chartData.challenge_hours ?? []
 
   chartInstance = new Chart(ctx, {
-    type: "bar",
+    type: 'bar',
     data: {
       labels,
       datasets: [
         {
-          label: "Learning",
+          label: 'Learning',
           data: courseHours,
-          backgroundColor: "#22c55e",
+          backgroundColor: '#22c55e',
           borderRadius: 8,
           categoryPercentage: 0.5,
           barPercentage: 0.9,
         },
         {
-          label: "Challenge",
+          label: 'Challenge',
           data: challengeHours,
-          backgroundColor: "#f59e0b",
+          backgroundColor: '#f59e0b',
           borderRadius: 8,
           categoryPercentage: 0.5,
           barPercentage: 0.9,
@@ -61,7 +61,7 @@ function createChart() {
       plugins: {
         legend: {
           display: true,
-          position: "top",
+          position: 'top',
           labels: {
             usePointStyle: true,
             boxWidth: 10,
@@ -72,9 +72,9 @@ function createChart() {
           enabled: true,
           callbacks: {
             label(context) {
-              const hours = context.raw ?? 0;
-              const formatted = Number(hours).toFixed(2);
-              return `${formatted} Hours`;
+              const hours = context.raw ?? 0
+              const formatted = Number(hours).toFixed(2)
+              return `${formatted} Hours`
             },
           },
         },
@@ -91,35 +91,35 @@ function createChart() {
           ticks: {
             stepSize: yMax / 4,
             callback(value) {
-              return `${value}h`;
+              return `${value}h`
             },
           },
           grid: {
-            color: "rgba(255,255,255,0.05)",
+            color: 'rgba(255,255,255,0.05)',
           },
         },
       },
     },
-  });
+  })
 }
 
 onMounted(() => {
-  createChart();
-});
+  createChart()
+})
 
 watch(
   () => props.chartData,
   () => {
-    createChart();
+    createChart()
   },
-  { deep: true },
-);
+  { deep: true }
+)
 
 onBeforeUnmount(() => {
   if (chartInstance) {
-    chartInstance.destroy();
+    chartInstance.destroy()
   }
-});
+})
 </script>
 
 <template>

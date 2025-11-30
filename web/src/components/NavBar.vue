@@ -1,8 +1,8 @@
 <script setup>
 defineOptions({
-  name: "NavBar"
-});
-import logo from "../assets/SkillSync_Logo.png";
+  name: 'NavBar',
+})
+import logo from '../assets/SkillSync_Logo.png'
 </script>
 
 <template>
@@ -30,11 +30,7 @@ import logo from "../assets/SkillSync_Logo.png";
           </button>
         </div>
       </div>
-      <div
-        v-if="isMenuOpen"
-        id="navbarToggleContent"
-        class="navbar-collapse show"
-      >
+      <div v-if="isMenuOpen" id="navbarToggleContent" class="navbar-collapse show">
         <div class="navbar-nav">
           <!-- Add your menu items here -->
           <a class="nav-link" href="#">Menu Item 1</a>

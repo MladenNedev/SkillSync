@@ -1,43 +1,43 @@
 <script setup>
 defineOptions({
-  name: "LoginPage"
-});
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { login, fetchCurrentUser } from "../api/auth";
+  name: 'LoginPage',
+})
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { login, fetchCurrentUser } from '../api/auth'
 
-const router = useRouter();
+const router = useRouter()
 
-const email = ref("demo@skillsync.test");
-const password = ref("password");
-const loading = ref(false);
-const error = ref(null);
+const email = ref('demo@skillsync.test')
+const password = ref('password')
+const loading = ref(false)
+const error = ref(null)
 
 async function handleSubmit() {
-  error.value = null;
-  loading.value = true;
+  error.value = null
+  loading.value = true
 
   try {
-    await login(email.value, password.value);
-    const user = await fetchCurrentUser();
+    await login(email.value, password.value)
+    const user = await fetchCurrentUser()
 
-    console.log("Logged in as:", user);
+    console.log('Logged in as:', user)
 
     // TODO later: store user in Pinia instead of just logging
 
-    router.push({ name: "dashboard" });
+    router.push({ name: 'dashboard' })
   } catch (e) {
-    console.error(e);
-    error.value = "Login failed. Check your credentials or server.";
+    console.error(e)
+    error.value = 'Login failed. Check your credentials or server.'
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 }
 </script>
 
 <template>
   <div class="login-page">
-    <form class="login-form" @submit.prevent="handleSubmit" >
+    <form class="login-form" @submit.prevent="handleSubmit">
       <h1>SkillSync Login</h1>
 
       <div class="field">
@@ -47,11 +47,7 @@ async function handleSubmit() {
 
       <div class="field">
         <label>Password</label>
-        <input
-          v-model="password"
-          type="password"
-          autocomplete="current-password"
-        />
+        <input v-model="password" type="password" autocomplete="current-password" />
       </div>
 
       <p v-if="error" class="error">
@@ -59,7 +55,7 @@ async function handleSubmit() {
       </p>
 
       <button type="submit" :disabled="loading">
-        {{ loading ? "Logging in..." : "Login" }}
+        {{ loading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
   </div>
