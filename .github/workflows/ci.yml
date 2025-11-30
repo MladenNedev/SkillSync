@@ -44,7 +44,7 @@ jobs:
             composer-
 
       - name: Install Composer dependencies
-        run: composer install --no-interaction  --no-progress --preffer-dist --no-ansi
+        run: composer install --no-interaction  --no-progress --prefer-dist --no-ansi
 
       - name: Copy .env
         run: |
