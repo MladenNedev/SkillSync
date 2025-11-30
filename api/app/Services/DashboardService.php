@@ -13,24 +13,24 @@ class DashboardService
         $now = Carbon::now();
 
         $todayStart = $now->copy()->startOfDay();
-        $todayEnd   = $now->copy()->endOfDay();
+        $todayEnd = $now->copy()->endOfDay();
 
-        $weekStart  = $now->copy()->startOfWeek();
-        $weekEnd    = $now->copy()->endOfWeek();
+        $weekStart = $now->copy()->startOfWeek();
+        $weekEnd = $now->copy()->endOfWeek();
 
         $lastWeekStart = $weekStart->copy()->subWeek();
-        $lastWeekEnd   = $weekEnd->copy()->subWeek();
+        $lastWeekEnd = $weekEnd->copy()->subWeek();
 
         // === Counts ===
-        $coursesInProgress   = $user->courseProgress()->where('status', 'in_progress')->count();
-        $coursesCompleted    = $user->courseProgress()->where('status', 'completed')->count();
+        $coursesInProgress = $user->courseProgress()->where('status', 'in_progress')->count();
+        $coursesCompleted = $user->courseProgress()->where('status', 'completed')->count();
         $challengesCompleted = $user->challengeProgress()->where('status', 'completed')->count();
 
         // === Time today ===
         $minutesToday = $user->studySessions()
             ->whereBetween('started_at', [$todayStart, $todayEnd])
             ->sum('duration_minutes');
-        
+
         // === Time this week & last week ===
         $minutesThisWeek = $user->studySessions()
             ->whereBetween('started_at', [$weekStart, $weekEnd])
@@ -55,26 +55,26 @@ class DashboardService
 
         return [
             'user' => [
-                'id'   => $user->id,
+                'id' => $user->id,
                 'name' => $user->name,
             ],
             'stats' => [
-                'courses_in_progress'      => $coursesInProgress,
-                'completed_courses'        => $coursesCompleted,
-                'completed_challenges'     => $challengesCompleted,
+                'courses_in_progress' => $coursesInProgress,
+                'completed_courses' => $coursesCompleted,
+                'completed_challenges' => $challengesCompleted,
                 'time_spent_today_minutes' => (int) $minutesToday,
             ],
             'weekly' => [
-                'total_hours'           => round($minutesThisWeek / 60, 1),
+                'total_hours' => round($minutesThisWeek / 60, 1),
                 'average_hours_per_day' => round($avgMinutesPerDay / 60, 2),
-                'course_hours'          => round($courseMinutesThisWeek / 60, 1),
-                'challenge_hours'       => round($challengeMinutesThisWeek / 60, 1),
+                'course_hours' => round($courseMinutesThisWeek / 60, 1),
+                'challenge_hours' => round($challengeMinutesThisWeek / 60, 1),
                 'delta' => [
-                    'total_hours'       => $this->calculateDeltaPercent($minutesThisWeek, $minutesLastWeek),
+                    'total_hours' => $this->calculateDeltaPercent($minutesThisWeek, $minutesLastWeek),
                 ],
                 'range' => [
                     'start' => $weekStart->toDateString(),
-                    'end'   => $weekEnd->toDateString(),
+                    'end' => $weekEnd->toDateString(),
                 ],
             ],
         ];
@@ -84,7 +84,7 @@ class DashboardService
     {
         $now = Carbon::now();
         $weekStart = $now->copy()->startOfWeek();
-        $weekEnd   = $now->copy()->endOfWeek();
+        $weekEnd = $now->copy()->endOfWeek();
 
         $rows = $user->studySessions()
             ->selectRaw('DATE(started_at) as date, type, SUM(duration_minutes) as total_minutes')
@@ -99,7 +99,7 @@ class DashboardService
             $date = $row->date;
             if (! isset($byDate[$date])) {
                 $byDate[$date] = [
-                    'course_minutes'    => 0,
+                    'course_minutes' => 0,
                     'challenge_minutes' => 0,
                 ];
             }
@@ -111,7 +111,7 @@ class DashboardService
             }
         }
 
-        $days   = [];
+        $days = [];
         $cursor = $weekStart->copy();
 
         for ($i = 0; $i < 7; $i++) {
@@ -120,7 +120,7 @@ class DashboardService
             $days[] = array_merge(
                 ['date' => $dateStr],
                 $byDate[$dateStr] ?? [
-                    'course_minutes'    => 0,
+                    'course_minutes' => 0,
                     'challenge_minutes' => 0,
                 ]
             );
@@ -131,7 +131,7 @@ class DashboardService
         return [
             'range' => [
                 'start_date' => $weekStart->toDateString(),
-                'end_date'   => $weekEnd->toDateString(),
+                'end_date' => $weekEnd->toDateString(),
             ],
             'days' => $days,
         ];
@@ -144,17 +144,17 @@ class DashboardService
             ->orderByDesc('last_accessed_at')
             ->limit($limit)
             ->get();
-        
+
         return $progress
             ->filter(fn (UserCourseProgress $item) => $item->course !== null)
             ->map(function (UserCourseProgress $item) {
                 $course = $item->course;
 
-                return[
-                    'id'               => $course->id,
-                    'title'            => $course->title,
-                    'author'           => $course->author,
-                    'image_url'        => $course->image_url,
+                return [
+                    'id' => $course->id,
+                    'title' => $course->title,
+                    'author' => $course->author,
+                    'image_url' => $course->image_url,
                     'progress_percent' => $item->progress_percent,
                     'last_accessed_at' => $item->last_accessed_at,
                 ];

@@ -2,11 +2,11 @@
 
 namespace Database\Seeders\Demo;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Course;
 use App\Models\StudySession;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class StudySessionsSeeder extends Seeder
 {
@@ -26,12 +26,12 @@ class StudySessionsSeeder extends Seeder
             $durationMinutes = (int) round($hours * 60);
 
             StudySession::create([
-                'user_id'          => $user->id,
-                'course_id'        => $course?->id,
-                'challenge_id'     => null,
-                'type'             => 'course',
-                'started_at'       => $start,
-                'ended_at'         => $start->copy()->addMinutes($durationMinutes),
+                'user_id' => $user->id,
+                'course_id' => $course?->id,
+                'challenge_id' => null,
+                'type' => 'course',
+                'started_at' => $start,
+                'ended_at' => $start->copy()->addMinutes($durationMinutes),
                 'duration_minutes' => $durationMinutes,
             ]);
         }

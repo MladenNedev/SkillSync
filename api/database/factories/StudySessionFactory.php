@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Challenge;
+use App\Models\Course;
 use App\Models\StudySession;
 use App\Models\User;
-use App\Models\Course;
-use App\Models\Challenge;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StudySessionFactory extends Factory
 {
@@ -23,12 +23,12 @@ class StudySessionFactory extends Factory
         $durationMinutes = $this->faker->numberBetween(20, 120);
 
         return [
-            'user_id'          => User::factory(),
-            'course_id'        => null,
-            'challenge_id'     => null,
-            'type'             => 'course',
-            'started_at'       => $start,
-            'ended_at'         => (clone $start)->addMinutes($durationMinutes),
+            'user_id' => User::factory(),
+            'course_id' => null,
+            'challenge_id' => null,
+            'type' => 'course',
+            'started_at' => $start,
+            'ended_at' => (clone $start)->addMinutes($durationMinutes),
             'duration_minutes' => $durationMinutes,
         ];
     }
@@ -43,20 +43,18 @@ class StudySessionFactory extends Factory
     public function forCourse(Course $course): static
     {
         return $this->state(fn () => [
-            'course_id'    => $course->id,
+            'course_id' => $course->id,
             'challenge_id' => null,
-            'type'         => 'course',
+            'type' => 'course',
         ]);
     }
 
     public function forChallenge(Challenge $challenge): static
     {
         return $this->state(fn () => [
-            'course_id'    => null,
+            'course_id' => null,
             'challenge_id' => $challenge->id,
-            'type'         => 'challenge',
+            'type' => 'challenge',
         ]);
     }
-
-
 }

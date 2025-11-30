@@ -2,8 +2,8 @@
 
 namespace Database\Seeders\Demo;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class UsersSeeder extends Seeder
 {
@@ -11,21 +11,21 @@ class UsersSeeder extends Seeder
     {
 
         User::factory()->create([
-            'name'      => 'Demo User',
-            'username'  => 'demo_user',
-            'email'     => 'demo@skillsync.test',
-        ]);
-        
-        User::factory()->create([
-            'name'     => 'John Doe',
-            'username' => 'john_doe',
-            'email'    => 'john@example.com',
+            'name' => 'Demo User',
+            'username' => 'demo_user',
+            'email' => 'demo@skillsync.test',
         ]);
 
         User::factory()->create([
-            'name'     => 'Sarah Smith',
+            'name' => 'John Doe',
+            'username' => 'john_doe',
+            'email' => 'john@example.com',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Sarah Smith',
             'username' => 'sarah_smith',
-            'email'    => 'sarah@example.com',
+            'email' => 'sarah@example.com',
         ]);
     }
 }

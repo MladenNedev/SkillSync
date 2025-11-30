@@ -2,11 +2,11 @@
 
 namespace Database\Seeders\Demo;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Challenge;
+use App\Models\User;
 use App\Models\UserChallengeProgress;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class UserChallengeProgressSeeder extends Seeder
 {
@@ -23,19 +23,19 @@ class UserChallengeProgressSeeder extends Seeder
         ];
 
         foreach ($challenges as $index => $challenge) {
-            $config = $progressOptions[$index % count ($progressOptions)];
+            $config = $progressOptions[$index % count($progressOptions)];
 
             $completedAt = $config['percent'] === 100
                 ? Carbon::now()->subDays(3)
                 : null;
 
             UserChallengeProgress::create([
-                'user_id'          => $user->id,
-                'challenge_id'     => $challenge->id,
+                'user_id' => $user->id,
+                'challenge_id' => $challenge->id,
                 'progress_percent' => $config['percent'],
-                'status'           => $config['status'],
+                'status' => $config['status'],
                 'last_accessed_at' => Carbon::now()->subDays(2),
-                'completed_at'     => $completedAt,
+                'completed_at' => $completedAt,
             ]);
         }
     }

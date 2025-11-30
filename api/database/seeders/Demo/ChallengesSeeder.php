@@ -2,10 +2,10 @@
 
 namespace Database\Seeders\Demo;
 
-use Illuminate\Database\Seeder;
 use App\Models\Challenge;
+use Illuminate\Database\Seeder;
 
-class ChallengesSeeder extends Seeder 
+class ChallengesSeeder extends Seeder
 {
     public function run(): void
     {

@@ -15,7 +15,7 @@ class ChallengeFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => 'Challenge: ' . $this->faker->sentence(2),
+            'title' => 'Challenge: '.$this->faker->sentence(2),
             'description' => $this->faker->sentence(12),
         ];
     }

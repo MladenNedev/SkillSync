@@ -2,9 +2,8 @@
 
 namespace Database\Seeders\Demo;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\Course;
+use Illuminate\Database\Seeder;
 
 class CoursesSeeder extends Seeder
 {
@@ -47,11 +46,10 @@ class CoursesSeeder extends Seeder
         ];
         foreach ($courses as $data) {
             Course::factory()->create([
-                'title'     => $data['title'],
-                'author'    => $data['author'],
-                'image_url' => null, 
+                'title' => $data['title'],
+                'author' => $data['author'],
+                'image_url' => null,
             ]);
         }
     }
 }
-
