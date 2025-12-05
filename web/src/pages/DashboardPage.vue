@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { fetchSummary, fetchChart, fetchRecentCourses } from '../api/dashboard'
-import { DashboardChart } from '@/components/DashboardChart.vue'
-import { placeholderImage } from '@/assets/course-placeholder.png'
+import DashboardChart from '@/components/DashboardChart.vue'
+import placeholderImage from '@/assets/course-placeholder.png'
 
 const summary = ref(null)
 const chartData = ref(null)
