@@ -43,7 +43,7 @@ class StudySessionsSeeder extends Seeder
     {
         $user = User::where('email', 'demo@skillsync.test')->firstOrFail();
 
-        $course = Course::where('title', 'JavaScript Basics')->first() 
+        $course = Course::where('title', 'JavaScript Basics')->first()
             ?? Course::first();
 
         $challenge = $user->challenges()->first();
