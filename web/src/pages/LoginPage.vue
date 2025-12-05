@@ -4,7 +4,7 @@ defineOptions({
 })
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { login, fetchCurrentUser } from '../api/auth'
+import { login, fetchCurrentUser } from '@/api/auth'
 
 const router = useRouter()
 
