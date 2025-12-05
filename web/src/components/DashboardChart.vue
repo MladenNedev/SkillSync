@@ -123,7 +123,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="dashboard_chart_container">
+  <div class="chart-box__content-chart-container">
     <canvas ref="canvasRef"></canvas>
   </div>
 </template>
