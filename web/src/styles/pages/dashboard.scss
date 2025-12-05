@@ -1,4 +1,4 @@
-html{
+html {
   background-color: #1c1d1d;
 }
 main {
@@ -34,7 +34,7 @@ main {
       padding: 0;
     }
   }
-  
+
   &__scope-selector {
     display: flex;
     align-items: center;
@@ -43,20 +43,19 @@ main {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: .6rem 1.5rem;
+      padding: 0.6rem 1.5rem;
       gap: 10px;
       border-radius: 2rem;
       border: solid 1px #3f9c88;
       background: transparent;
 
-      &-icon{
+      &-icon {
         color: #3f9c88;
       }
 
-      &-text{
+      &-text {
         color: #3f9c88;
       }
-
     }
   }
 }
@@ -85,15 +84,15 @@ main {
   &__text {
     display: flex;
     flex-direction: column;
-    
-    &-title{
+
+    &-title {
       font-size: 1.2rem;
       color: #eaebea;
       margin: 0;
       padding: 0;
     }
 
-    &-subtitle{
+    &-subtitle {
       font-size: 0.8rem;
       color: #989999;
       margin: 0;
@@ -103,24 +102,24 @@ main {
 }
 
 /* CHART */
-.chart-box{
+.chart-box {
   min-height: 320px;
   height: 60vh;
   max-height: 480px;
 
-  &__content{
+  &__content {
     display: flex;
     height: 100%;
     min-width: 100%;
-    &-chart{
+    &-chart {
       height: 100%;
       width: 100%;
-      &-container{
+      &-container {
         flex: 1;
         height: 100%;
         width: 100%;
 
-        canvas{
+        canvas {
           height: 100% !important;
           width: 100% !important;
         }
@@ -130,16 +129,16 @@ main {
 }
 
 /* RECENT COURSES */
-.recent-courses-box{
-  &__header{
+.recent-courses-box {
+  &__header {
     display: flex;
     justify-content: space-between;
 
-    &-title{
+    &-title {
       color: #fbfafb;
     }
 
-    &-button{
+    &-button {
       color: #3ea08e;
       background: transparent;
       border: none;
@@ -165,7 +164,7 @@ main {
       display: flex;
       flex-direction: column;
       gap: 10px;
-  
+
       &-title {
         font-size: 1.2rem;
         color: #fbfafb;

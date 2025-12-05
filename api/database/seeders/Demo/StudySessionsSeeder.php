@@ -25,7 +25,7 @@ class StudySessionsSeeder extends Seeder
             }
 
             $start = $monday->copy()->addDays($i)->setTime(10, 0);
-            $durationMinutes = int round($hours * 60);
+            $durationMinutes = (int) round($hours * 60);
 
             StudySession::create([
                 'user_id' => $user->id,
@@ -58,13 +58,13 @@ class StudySessionsSeeder extends Seeder
         );
 
         // Weekly Challenges
-        $this->seekWeeklySessions(
+        $this->seedWeeklySessions(
             user: $user,
             type: 'challenge',
             courseId: null,
             challengeId: $challenge->id,
             hoursPerDay: [0.5, 1.0, 0.2, 0.7, 1.5, 0.0, 0.9]
-        )
+        );
 
         $monday = Carbon::now()->startOfWeek(Carbon::MONDAY);
 

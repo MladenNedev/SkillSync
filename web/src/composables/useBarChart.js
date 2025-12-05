@@ -28,14 +28,14 @@ export function useBarChart() {
           data: data.challenge_hours ?? [],
           color: '#f59e0b',
         },
-      ].filter(ds => ds.data.length > 0),
+      ].filter((ds) => ds.data.length > 0),
 
       yMax: data.yMax ?? 8,
     }
   }
 
   function buildDatasets(sets) {
-    return sets.map(s => ({
+    return sets.map((s) => ({
       label: s.label,
       data: s.data,
       backgroundColor: s.color,
@@ -73,7 +73,7 @@ export function useBarChart() {
           max: yMax,
           ticks: {
             stepSize: yMax / 4,
-            callback: v => `${v}h`,
+            callback: (v) => `${v}h`,
           },
         },
       },

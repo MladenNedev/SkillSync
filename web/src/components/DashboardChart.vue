@@ -17,7 +17,7 @@ onMounted(() => {
 
 watch(
   () => props.chartData,
-  newVal => createChart(canvasRef.value, newVal),
+  (newVal) => createChart(canvasRef.value, newVal),
   { deep: true }
 )
 
