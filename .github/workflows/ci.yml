@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  backend:
+    name: Backend (Laravel)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pdo_mysql, sqlite3, pdo_sqlite
+          coverage: none
+
+      - name: Ensure bootstrap/cache exists
+        run: |
+          mkdir -p bootstrap/cache
+          chmod -R 0777 bootstrap/cache
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: api/vendor
+          key: composer-${{ hashFiles('api/composer.lock') }}
+          restore-keys: |
+            composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction  --no-progress --prefer-dist --no-ansi
+
+      - name: Copy .env
+        run: |
+          if [ ! -f .env ]; then
+            if [ -f .env.example ]; then
+              cp .env.example .env
+            else
+              echo "No .env.example found, generating minimal CI .env"
+              printf "%s\n" \
+                "APP_NAME=SkillSync" \
+                "APP_ENV=testing" \
+                "APP_KEY=" \
+                "APP_DEBUG=true" \
+                "APP_URL=http://localhost" \
+                "" \
+                "DB_CONNECTION=sqlite" \
+                "DB_DATABASE=:memory:" \
+                "" \
+                "CACHE_DRIVER=array" \
+                "QUEUE_CONNECTION=sync" \
+                "SESSION_DRIVER=array" \
+                "SESSION_LIFETIME=120" \
+                > .env
+            fi
+          fi
+
+      - name: Generate app key
+        run: php artisan key:generate --no-ansi
+
+      - name: Run Pint (code style)
+        run: ./vendor/bin/pint --test
+
+      - name: Run PHPStan (static analysis)
+        run: ./vendor/bin/phpstan analyse
+
+  frontend:
+    name: Frontend (Vue)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Prettier (check only)
+        run: npm run format:check
+
+      - name: Build SPA
+        run: npm run build

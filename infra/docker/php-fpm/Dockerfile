@@ -6,8 +6,12 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+RUN echo "memory_limit=1G" > /usr/local/etc/php/conf.d/memory-limit.ini
+
 RUN useradd -ms /bin/bash app && chown -R app:app /var/www/
 USER app
+
+
 
 WORKDIR /var/www/html
 

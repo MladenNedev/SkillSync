@@ -1,32 +1,32 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Dashboard from '../pages/Dashboard.vue';
-import Login from '../pages/Login.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import Dashboard from '../pages/DashboardPage.vue'
+import Login from '../pages/LoginPage.vue'
 
 const routes = [
-    {
-        path: '/login',
-        name: 'login',
-        component: Login,
-    },
-    {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: Dashboard,
-        meta: { requiresAuth: true },
-    },
-    {
-        path: '/',
-        redirect: '/dashboard',
-    },
-];
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/',
+    redirect: '/dashboard',
+  },
+]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
+  history: createWebHistory(),
+  routes,
+})
 
 router.beforeEach((to, from, next) => {
-    next();
-});
+  next()
+})
 
-export default router;
+export default router
