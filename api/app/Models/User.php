@@ -62,4 +62,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(StudySession::class);
     }
+
+    public function challenges()
+    {
+        return $this->belongsToMany(Challenge::class, 'user_challenge_progress')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
 }
