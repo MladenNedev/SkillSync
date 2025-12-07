@@ -110,8 +110,8 @@ onMounted(async () => {
       <div class="row">
         <div class="welcome-box col-10 offset-1">
           <div class="welcome-box__text">
-            <h1>Welcome back, {{ summary.user.name }}</h1>
-            <p>Here's an overview of your study progress this week.</p>
+            <h1 class="welcome-box__text-title">Welcome back, {{ summary.user.name }}</h1>
+            <p class="welcome-box__text-subtitle">Here's an overview of your study progress this week.</p>
           </div>
           <div class="welcome-box__scope-selector">
             <button>Weekly</button>
@@ -128,8 +128,8 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-solid fa-list-check" />
                 </div>
                 <div class="summary-card__text">
-                  <h2>{{ summary.stats.courses_in_progress }} Courses</h2>
-                  <p>In Progress</p>
+                  <h2 class="summary-card__text-title">{{ summary.stats.courses_in_progress }} Courses</h2>
+                  <p class="summary-card__text-subtitle">In Progress</p>
                 </div>
               </article>
             </div>
@@ -140,8 +140,8 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-book-bookmark" />
                 </div>
                 <div class="summary-card__text">
-                  <h2>{{ summary.stats.completed_courses }} Courses</h2>
-                  <p>Completed</p>
+                  <h2 class="summary-card__text-title">{{ summary.stats.completed_courses }} Courses</h2>
+                  <p class="summary-card__text-subtitle">Completed</p>
                 </div>
               </article>
             </div>
@@ -152,8 +152,8 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-solid fa-medal" />
                 </div>
                 <div class="summary-card__text">
-                  <h2>{{ summary.stats.completed_challenges }} Challenges</h2>
-                  <p>Completed</p>
+                  <h2 class="summary-card__text-title">{{ summary.stats.completed_challenges }} Challenges</h2>
+                  <p class="summary-card__text-subtitle">Completed</p>
                 </div>
               </article>
             </div>
@@ -164,8 +164,8 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-solid fa-clock" />
                 </div>
                 <div class="summary-card__text">
-                  <h2>{{ formattedTimeSpentToday }}</h2>
-                  <p>Time Spent</p>
+                  <h2 class="summary-card__text-title">{{ formattedTimeSpentToday }}</h2>
+                  <p class="summary-card__text-subtitle">Time Spent</p>
                 </div>
               </article>
             </div>
@@ -180,8 +180,8 @@ onMounted(async () => {
             <div class="chart_legend"></div>
           </div>
 
-          <div class="chart-box_content">
-            <div class="chart">
+          <div class="chart-box__content">
+            <div class="chart-box__content-chart">
               <DashboardChart :chart-data="chartData" />
             </div>
 
@@ -208,21 +208,25 @@ onMounted(async () => {
 
         <div class="recent-courses-box col-5">
           <section>
-            <header class="recent-courses-box_header">
-              <h2>Recent courses</h2>
-              <button>View all courses</button>
+            <header class="recent-courses-box__header">
+              <h2 class="recent-courses-box__header-title">Recent courses</h2>
+              <button class="recent-courses-box__header-button">View all courses</button>
             </header>
 
             <div class="recent-courses-box_items">
               <div v-for="course in recentCourses" :key="course.id" class="course-item">
-                <img :src="course.image_url ?? placeholderImage" class="course-item_image" />
-                <div>
-                  <h3>{{ course.title }}</h3>
-                  <p>{{ course.author }}</p>
-                  <!-- you can add a proper progress bar later -->
-                  <p>Progress: {{ course.progress_percent }}%</p>
+                <img :src="course.image_url ?? placeholderImage" class="course-item__image" />
+                <div class="course-item__content">
+                  <div class="course-item__content-header">
+                    <h3 class="course-item__content-header-title">{{ course.title }}</h3>
+                    <p class="course-item__content-header-author">{{ course.author }}</p>
+                </div>
+
+                <div class="course-item__content-footer">
+                  <p class="course-item__content-footer-progress">Progress</p>
                 </div>
               </div>
+            </div>
             </div>
           </section>
         </div>
