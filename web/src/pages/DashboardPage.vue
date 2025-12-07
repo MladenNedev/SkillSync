@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { fetchSummary, fetchChart, fetchRecentCourses } from '../api/dashboard'
 import DashboardChart from '@/components/DashboardChart.vue'
 import placeholderImage from '@/assets/course-placeholder.png'
+import NavBar from '@/components/NavBar.vue'
 
 const summary = ref(null)
 const chartData = ref(null)
@@ -102,9 +103,10 @@ onMounted(async () => {
 </script>
 
 <template>
+
+  <NavBar />
   <div v-if="loading" style="color: red">Loading...</div>
   <div v-else-if="error">{{ error }}</div>
-
   <main v-else>
     <div class="container-fluid">
       <div class="row">
@@ -183,9 +185,20 @@ onMounted(async () => {
 
       <div class="row">
         <div class="chart-box col-5 offset-1">
-          <div class="chart-box_heading">
-            <h1></h1>
-            <div class="chart_legend"></div>
+          <div class="chart-box__header">
+            <h1 class="chart-box__header-title">Spent Hours</h1>
+
+            <div class="chart-box__legend">
+              <button class="legend-btn legend-btn--learning">
+                <span class="legend-color legend-color--learning"></span>
+                Learning
+              </button>
+
+              <button class="legend-btn legend-btn--challenge">
+                <span class="legend-color legend-color--challenge"></span>
+                Challenge
+              </button>
+            </div>
           </div>
 
           <div class="chart-box__content">
@@ -195,20 +208,23 @@ onMounted(async () => {
 
             <aside class="weekly-metrics">
               <div class="kpi-item">
-                <span>Total hours this week</span>
-                <strong>{{ summary.weekly.total_hours.toFixed(1) }}</strong>
+                <span class="kpi-label">Total hours this week</span>
+                <strong class="kpi-value">{{ summary.weekly.total_hours.toFixed(1) }}</strong>
               </div>
+
               <div class="kpi-item">
-                <span>Average hours per day</span>
-                <strong>{{ summary.weekly.average_hours_per_day.toFixed(2) }}</strong>
+                <span class="kpi-label">Average per day</span>
+                <strong class="kpi-value">{{ summary.weekly.average_hours_per_day.toFixed(2) }}</strong>
               </div>
+
               <div class="kpi-item">
-                <span>Course hours this week</span>
-                <strong>{{ summary.weekly.course_hours.toFixed(1) }}</strong>
+                <span class="kpi-label">Course hours</span>
+                <strong class="kpi-value">{{ summary.weekly.course_hours.toFixed(1) }}</strong>
               </div>
+
               <div class="kpi-item">
-                <span>Challenge hours this week</span>
-                <strong>{{ summary.weekly.challenge_hours.toFixed(1) }}</strong>
+                <span class="kpi-label">Challenge hours</span>
+                <strong class="kpi-value">{{ summary.weekly.challenge_hours.toFixed(1) }}</strong>
               </div>
             </aside>
           </div>

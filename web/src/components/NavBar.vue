@@ -1,42 +1,45 @@
 <script setup>
-defineOptions({
-  name: 'NavBar',
-})
+defineOptions({ name: 'NavBar' })
+import { ref } from 'vue'
 import logo from '../assets/SkillSync_Logo.png'
+
+const isMenuOpen = ref(false)
+const toggleMenu = () => (isMenuOpen.value = !isMenuOpen.value)
 </script>
 
 <template>
-  <header>
-    <nav class="container-fluid">
-      <div class="row">
-        <div class="col-3 nav-logo-container">
-          <img :src="logo" alt="SkillSync_Logo" />
+  <header class="navbar">
+    <nav class="navbar__container container-fluid">
+      <div class="row align-items-center">
+
+        <!-- Logo -->
+        <div class="col-3 navbar__logo">
+          <img :src="logo" alt="SkillSync Logo" class="navbar__logo-img" />
         </div>
-        <div class="col-5 offset-4 nav-tools-container">
-          <button class="search-button">
-            <font-awesome-icon icon="magnifying-glass" class="search-icon" />
+
+        <!-- Actions -->
+        <div class="col-5 offset-4 navbar__actions">
+          <button class="navbar__btn">
+            <font-awesome-icon icon="magnifying-glass" />
           </button>
-          <button class="notifications-button">
-            <font-awesome-icon icon="bell" class="notifications-icon" />
+          <button class="navbar__btn">
+            <font-awesome-icon icon="bell" />
           </button>
-          <button
-            class="navbar-toggler hamburger-button"
-            type="button"
-            :aria-expanded="isMenuOpen"
-            aria-label="Toggle navigation"
-            @click="toggleMenu"
-          >
-            <font-awesome-icon icon="bars" class="hamburger-icon" />
+
+          <button class="navbar__btn navbar__hamburger"
+                  type="button"
+                  :aria-expanded="isMenuOpen"
+                  @click="toggleMenu">
+            <font-awesome-icon icon="bars" />
           </button>
         </div>
       </div>
-      <div v-if="isMenuOpen" id="navbarToggleContent" class="navbar-collapse show">
-        <div class="navbar-nav">
-          <!-- Add your menu items here -->
-          <a class="nav-link" href="#">Menu Item 1</a>
-          <a class="nav-link" href="#">Menu Item 2</a>
-          <a class="nav-link" href="#">Menu Item 3</a>
-        </div>
+
+      <!-- Mobile dropdown -->
+      <div v-if="isMenuOpen" class="navbar__dropdown">
+        <a class="navbar__dropdown-item" href="#">Menu Item 1</a>
+        <a class="navbar__dropdown-item" href="#">Menu Item 2</a>
+        <a class="navbar__dropdown-item" href="#">Menu Item 3</a>
       </div>
     </nav>
   </header>

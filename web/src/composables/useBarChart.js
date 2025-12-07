@@ -13,6 +13,16 @@ export function useBarChart() {
   }
 
   function extract(data) {
+
+    const course = data.course_hours ?? []
+    const challenge = data.challenge_hours ?? []
+    
+    const maxCourse = Math.max(...course, 0)
+    const maxChallenge = Math.max(...challenge, 0)
+    const maxVal = Math.max(maxCourse, maxChallenge)
+
+    const computedMax = Math.ceil(maxVal)
+
     return {
       labels: data.labels ?? [],
       datasets: [
@@ -30,8 +40,20 @@ export function useBarChart() {
         },
       ].filter((ds) => ds.data.length > 0),
 
-      yMax: data.yMax ?? 8,
+      yMax: computedMax,
     }
+  }
+
+  function formatHoursToHM(value) {
+    if (!value || value <= 0) return '0h'
+
+    const hours = Math.floor(value)
+    const minutes = Math.round((value % 1) * 60)
+
+    if (hours === 0) return `${minutes}m`
+    if (minutes === 0) return `${hours}h`
+
+    return `${hours}h ${minutes}m`
   }
 
   function buildDatasets(sets) {
@@ -55,13 +77,48 @@ export function useBarChart() {
       },
       plugins: {
         legend: {
-          display: true,
-          position: 'top',
+          display: false,
         },
         tooltip: {
+          displayColors: false,
           callbacks: {
+            title(ctx) {
+              const dayIndex = ctx[0].dataIndex
+              const datasetName = ctx[0].dataset.label
+        
+              const fullDayNames = [
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+                'Sunday',
+              ]
+        
+              const dayName = fullDayNames[dayIndex] ?? 'Day'
+        
+              return `${dayName} – ${datasetName}`
+            },
+        
             label(ctx) {
-              return `${ctx.raw.toFixed(2)} hours`
+
+              const raw = ctx.raw ?? 0
+        
+              // Convert hours.decimal → minutes total
+              const totalMinutes = Math.round(raw * 60)
+              const hours = Math.floor(totalMinutes / 60)
+              const minutes = totalMinutes % 60
+        
+              const hm =
+                hours > 0 && minutes > 0
+                  ? `${hours}h ${minutes}m`
+                  : hours > 0
+                  ? `${hours}h`
+                  : `${minutes}m`
+        
+              return `Time spent: ${totalMinutes} minutes (${hm})`
+              
             },
           },
         },

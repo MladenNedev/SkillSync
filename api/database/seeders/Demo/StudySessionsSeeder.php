@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Demo;
 
+use App\Models\Challenge;
 use App\Models\Course;
 use App\Models\StudySession;
 use App\Models\User;
@@ -12,7 +13,7 @@ class StudySessionsSeeder extends Seeder
 {
     private function seedWeeklySessions(
         User $user,
-        string $type, // 'course' or 'challenge'
+        string $type,    // 'course' or 'challenge'
         ?int $courseId,
         ?int $challengeId,
         array $hoursPerDay
@@ -43,10 +44,17 @@ class StudySessionsSeeder extends Seeder
     {
         $user = User::where('email', 'demo@skillsync.test')->firstOrFail();
 
+        // Ensure course exists
         $course = Course::where('title', 'JavaScript Basics')->first()
             ?? Course::first();
 
-        $challenge = $user->challenges()->first();
+        // Ensure challenge exists for the user
+        $challenge = $user->challenges()->first()
+            ?? Challenge::first()
+            ?? Challenge::factory()->create([
+                'title' => 'Demo Challenge',
+                'description' => 'Automatically generated demo challenge',
+            ]);
 
         // Weekly Course Study
         $this->seedWeeklySessions(
@@ -57,7 +65,7 @@ class StudySessionsSeeder extends Seeder
             hoursPerDay: [1.2, 0.8, 2.1, 1.7, 0.5, 1.0, 2.8]
         );
 
-        // Weekly Challenges
+        // Weekly Challenge Study
         $this->seedWeeklySessions(
             user: $user,
             type: 'challenge',
@@ -65,25 +73,5 @@ class StudySessionsSeeder extends Seeder
             challengeId: $challenge->id,
             hoursPerDay: [0.5, 1.0, 0.2, 0.7, 1.5, 0.0, 0.9]
         );
-
-        $monday = Carbon::now()->startOfWeek(Carbon::MONDAY);
-
-        $hoursPerDay = [1.2, 0.8, 2.1, 1.7, 0.5, 1.0, 2.8];
-
-        foreach ($hoursPerDay as $i => $hours) {
-            $start = $monday->copy()->addDays($i)->setTime(10, 0);
-
-            $durationMinutes = (int) round($hours * 60);
-
-            StudySession::create([
-                'user_id' => $user->id,
-                'course_id' => $course?->id,
-                'challenge_id' => null,
-                'type' => 'course',
-                'started_at' => $start,
-                'ended_at' => $start->copy()->addMinutes($durationMinutes),
-                'duration_minutes' => $durationMinutes,
-            ]);
-        }
     }
 }
