@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Challenge extends Model
 {
@@ -24,5 +24,11 @@ class Challenge extends Model
     public function studySessions()
     {
         return $this->hasMany(StudySession::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_challenge_progress')
+            ->withPivot(['status', 'progress_percent', 'last_accessed_at', 'total_minutes_spent', 'completed_at']);
     }
 }

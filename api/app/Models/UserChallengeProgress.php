@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class UserChallengeProgress extends Model
 {
@@ -19,6 +19,12 @@ class UserChallengeProgress extends Model
         'last_accessed_at',
         'total_minutes_spent',
         'completed_at',
+    ];
+
+    protected $casts = [
+        'last_accessed_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'total_minutes_spent' => 'integer',
     ];
 
     public function user()
