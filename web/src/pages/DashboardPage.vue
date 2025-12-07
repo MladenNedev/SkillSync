@@ -111,7 +111,9 @@ onMounted(async () => {
         <div class="welcome-box col-10 offset-1">
           <div class="welcome-box__text">
             <h1 class="welcome-box__text-title">Welcome back, {{ summary.user.name }}</h1>
-            <p class="welcome-box__text-subtitle">Here's an overview of your study progress this week.</p>
+            <p class="welcome-box__text-subtitle">
+              Here's an overview of your study progress this week.
+            </p>
           </div>
           <div class="welcome-box__scope-selector">
             <button>Weekly</button>
@@ -128,7 +130,9 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-solid fa-list-check" />
                 </div>
                 <div class="summary-card__text">
-                  <h2 class="summary-card__text-title">{{ summary.stats.courses_in_progress }} Courses</h2>
+                  <h2 class="summary-card__text-title">
+                    {{ summary.stats.courses_in_progress }} Courses
+                  </h2>
                   <p class="summary-card__text-subtitle">In Progress</p>
                 </div>
               </article>
@@ -140,7 +144,9 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-book-bookmark" />
                 </div>
                 <div class="summary-card__text">
-                  <h2 class="summary-card__text-title">{{ summary.stats.completed_courses }} Courses</h2>
+                  <h2 class="summary-card__text-title">
+                    {{ summary.stats.completed_courses }} Courses
+                  </h2>
                   <p class="summary-card__text-subtitle">Completed</p>
                 </div>
               </article>
@@ -152,7 +158,9 @@ onMounted(async () => {
                   <font-awesome-icon icon="fa-solid fa-medal" />
                 </div>
                 <div class="summary-card__text">
-                  <h2 class="summary-card__text-title">{{ summary.stats.completed_challenges }} Challenges</h2>
+                  <h2 class="summary-card__text-title">
+                    {{ summary.stats.completed_challenges }} Challenges
+                  </h2>
                   <p class="summary-card__text-subtitle">Completed</p>
                 </div>
               </article>
@@ -220,13 +228,13 @@ onMounted(async () => {
                   <div class="course-item__content-header">
                     <h3 class="course-item__content-header-title">{{ course.title }}</h3>
                     <p class="course-item__content-header-author">{{ course.author }}</p>
-                </div>
+                  </div>
 
-                <div class="course-item__content-footer">
-                  <p class="course-item__content-footer-progress">Progress</p>
+                  <div class="course-item__content-footer">
+                    <p class="course-item__content-footer-progress">Progress</p>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
           </section>
         </div>
