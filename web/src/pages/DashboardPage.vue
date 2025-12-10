@@ -11,6 +11,21 @@ const recentCourses = ref([])
 const loading = ref(true)
 const error = ref(null)
 
+// --- Scope State --- //
+const scope = ref('week')
+
+const scopeLabel = computed(() => (scope.value === 'week' ? 'Weekly' : 'Monthly'))
+
+const scopeSubtitle = computed(() =>
+  scope.value === 'week'
+    ? "Here's an overview of your study progress this week."
+    : "Here's an overview of your study progress this month."
+)
+
+function setScope(newScope) {
+  scope.value = newScope
+}
+
 function formatMinutesToHoursMinutes(totalMinutes) {
   if (totalMinutes == null) return '00 h 00 m'
 
@@ -51,22 +66,8 @@ onMounted(async () => {
     const labels = []
     const courseHours = []
     const challengeHours = []
-    const allHours = [...courseHours, ...challengeHours]
-    const maxHours = Math.max(...allHours, 0)
 
-    let yMax
-    if (maxHours <= 1.5) {
-      yMax = 2
-    } else if (maxHours <= 3) {
-      yMax = 4
-    } else if (maxHours <= 5) {
-      yMax = 6
-    } else {
-      yMax = 8
-    }
-
-    const days = chartRes.days ?? [] // adjust if your key is different
-
+    const days = chartRes.days ?? [] 
     const shortNames = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 
     for (let i = 0; i < 7; i++) {
@@ -75,15 +76,32 @@ onMounted(async () => {
 
       labels.push(shortNames[i])
 
-      const iso = d.toISOString().split('T')[0] // <-- lowercase split
+      const iso = d.toISOString().split('T')[0]
       const entry = days.find((x) => x.date === iso)
 
-      const courseMinutes = entry?.course_minutes ?? 0 // adjust field names
+      const courseMinutes = entry?.course_minutes ?? 0 
       const challengeMinutes = entry?.challenge_minutes ?? 0
 
       courseHours.push(Number((courseMinutes / 60).toFixed(2)))
       challengeHours.push(Number((challengeMinutes / 60).toFixed(2)))
     }
+
+
+    const allHours = [...courseHours, ...challengeHours]
+    const maxHours = Math.max(...allHours, 0)
+
+    const decimalPart = maxHours % 1
+
+    let yMax
+    if (decimalPart < 0.6) {
+      yMax = Math.ceil(maxHours)
+    } else {
+      yMax = Math.ceil(maxHours) + 1
+    }
+
+
+
+
 
     chartData.value = {
       labels,
@@ -114,11 +132,42 @@ onMounted(async () => {
           <div class="welcome-box__text">
             <h1 class="welcome-box__text-title">Welcome back, {{ summary.user.name }}</h1>
             <p class="welcome-box__text-subtitle">
-              Here's an overview of your study progress this week.
+              {{ scopeSubtitle }}
             </p>
           </div>
-          <div class="welcome-box__scope-selector">
-            <button>Weekly</button>
+          <div class="welcome-box__scope-selector dropdown">
+            <button 
+              class="welcome-box__scope-selector__button dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            > 
+              {{ scopeLabel }} 
+              <span class="welcome-box__scope-selector__button-chevron">
+                <font-awesome-icon icon="chevron-down" />
+              </span>
+            </button>
+
+            <ul class="dropdown-menu welcome-box__scope-selector__menu">
+              <li>
+                <button
+                  class="dropdown-item welcome-box__scope-selector__menu-item"
+                  :class="{ 'welcome-box__scope-selector__menu-item--active': scope === 'week' }"
+                  @click="setScope('week')"
+                >
+                  Weekly
+                </button>
+              </li>
+              <li>
+                <button
+                  class="dropdown-item welcome-box__scope-selector__menu-item"
+                  :class="{ 'welcome-box__scope-selector__menu-item--active': scope === 'month' }"
+                  @click="setScope('month')"
+                >
+                  Monthly
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
