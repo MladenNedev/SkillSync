@@ -24,6 +24,7 @@ main {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2rem;
 
   &__text {
     &-title {
@@ -56,6 +57,10 @@ main {
       font-size: 0.9rem;
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease;
+
+      &.dropdown-toggle::after {
+        display: none;
+      }
 
       &:hover {
         background: rgba(30, 64, 175, 0.25);

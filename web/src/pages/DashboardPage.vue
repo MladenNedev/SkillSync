@@ -51,8 +51,8 @@ onMounted(async () => {
 
   try {
     const [summaryRes, chartRes, recentRes] = await Promise.all([
-      fetchSummary(),
-      fetchChart(),
+      fetchSummary(scope.value),
+      fetchChart(scope.value),
       fetchRecentCourses(),
     ])
 
@@ -98,10 +98,6 @@ onMounted(async () => {
     } else {
       yMax = Math.ceil(maxHours) + 1
     }
-
-
-
-
 
     chartData.value = {
       labels,

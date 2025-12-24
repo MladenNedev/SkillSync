@@ -3,73 +3,80 @@
     width: 100%;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     padding: 0.6rem 0;
-  }
-  
-  .navbar__container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  
-  .navbar__logo-img {
-    max-height: 45px;
-    width: auto;
-    object-fit: contain;
-  }
-  
-  .navbar__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-  }
-  
-  .navbar__btn {
-    background: #242525;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    width: 42px;
-    height: 42px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.15s ease;
-  
-    &:hover {
-      background: #2f3030;
+    margin-bottom: 2rem;
+
+    .navbar-row{
+      width: 100%;
     }
-  }
-  
-  .navbar__hamburger {
-    display: none;
-  
-    @media (max-width: 992px) {
+
+    .navbar-content{
       display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-  }
-  
-  /* Mobile dropdown */
-  .navbar__dropdown {
-    display: flex;
-    flex-direction: column;
-    background: #242525;
-    margin-top: 0.6rem;
-    padding: 0.6rem 1rem;
-    border-radius: 12px;
-  }
-  
-  .navbar__dropdown-item {
-    padding: 0.6rem 0.3rem;
-    color: white;
-    font-size: 0.95rem;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  
-    &:last-child {
-      border-bottom: none;
+
+    &__logo{
+      &-img{
+        max-height: 45px;
+        width: auto;
+        object-fit: contain;
+      }
     }
+    
+    &__tools{
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+
+      &-button{
+        background: #242525;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      
+        &:hover {
+          background: #2f3030;
+        }
+      }
+
+      &-hamburger{
+        display: none;
   
-    &:hover {
-      color: #3ea08e;
+        @media (max-width: 992px) {
+          display: flex;
+        }
+      }
+    }
+
+    &__dropdown {
+      display: flex;
+      flex-direction: column;
+      background: #242525;
+      margin-top: 0.6rem;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+
+      &-item {
+        padding: 0.6rem 0.3rem;
+        color: white;
+        font-size: 0.95rem;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+      
+        &:last-child {
+          border-bottom: none;
+        }
+      
+        &:hover {
+          color: #3ea08e;
+        }
+      }
     }
   }
