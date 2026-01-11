@@ -69,7 +69,7 @@ All modeled cleanly through Eloquent.
 ---
 
 ## 4. Project Structure
-
+```text
 SkillSync/
 
 # Backend — Laravel API
@@ -90,6 +90,7 @@ SkillSync/
     ├── php/
     ├── mysql/
     └── compose.yml
+```
 
 ---
 
