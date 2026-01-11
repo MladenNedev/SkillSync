@@ -62,9 +62,55 @@ Includes:
 - Challenges  
 - StudySessions  
 - UserCourseProgress  
-- UserChallengeProgress  
+- UserChallengeProgress
 
 All modeled cleanly through Eloquent.
+
+```mermaid
+erDiagram
+    USER {
+        int id PK
+        string email
+        datetime created_at
+    }
+
+    COURSE {
+        int id PK
+        string title
+    }
+
+    CHALLENGE {
+        int id PK
+        string title
+    }
+
+    STUDY_SESSION {
+        int id PK
+        int user_id FK
+        int duration_minutes
+        date session_date
+    }
+
+    USER_COURSE_PROGRESS {
+        int id PK
+        int user_id FK
+        int course_id FK
+        int progress_percent
+    }
+
+    USER_CHALLENGE_PROGRESS {
+        int id PK
+        int user_id FK
+        int challenge_id FK
+        boolean completed
+    }
+
+    USER ||--o{ STUDY_SESSION : logs
+    USER ||--o{ USER_COURSE_PROGRESS : tracks
+    COURSE ||--o{ USER_COURSE_PROGRESS : referenced_by
+    USER ||--o{ USER_CHALLENGE_PROGRESS : tracks
+    CHALLENGE ||--o{ USER_CHALLENGE_PROGRESS : referenced_by
+```
 
 ---
 
