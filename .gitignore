@@ -4,8 +4,10 @@ api/node_modules/
 api/storage/
 api/bootstrap/cache/
 api/.env
-api/.env.*
+api/.env.local
+api/.env.production
 api/public/storage
+!api/.env.example
 api/storage/*.key
 
 # Laravel logs
@@ -18,10 +20,15 @@ api/storage/framework/views/
 web/node_modules/
 web/dist/
 web/.env
-web/.env.*
+web/.env.local
+web/.env.production
+!web/.env.example
 
 # === Docker volumes ===
 infra/db_data/
+infra/.env
+infra/.env*
+!infra/.env.example
 
 # === System / editor files ===
 .DS_Store
