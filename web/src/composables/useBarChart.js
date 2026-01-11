@@ -21,7 +21,7 @@ export function useBarChart() {
     const maxChallenge = Math.max(...challenge, 0)
     const maxVal = Math.max(maxCourse, maxChallenge)
 
-    const computedMax = Math.ceil(maxVal)
+    const computedMax = Math.max(Math.ceil(maxVal), 2)
 
     return {
       labels: data.labels ?? [],
@@ -138,17 +138,25 @@ export function useBarChart() {
   }
 
   function createChart(el, data) {
-    destroyChart()
-    if (!el) return
+    if (!el || !data) return
 
     const ctx = el.getContext('2d')
     const parsed = extract(data)
+    const datasets = buildDatasets(parsed.datasets)
+
+    if (chartInstance) {
+      chartInstance.data.labels = parsed.labels
+      chartInstance.data.datasets = datasets
+      chartInstance.options = buildOptions(parsed.yMax)
+      chartInstance.update()
+      return
+    }
 
     chartInstance = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: parsed.labels,
-        datasets: buildDatasets(parsed.datasets),
+        datasets,
       },
       options: buildOptions(parsed.yMax),
     })

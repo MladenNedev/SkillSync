@@ -8,7 +8,7 @@ body {
 main {
   background-color: #1c1d1d;
   margin: 0;
-  padding: 0;
+  padding: 0 0 2rem;
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
@@ -24,6 +24,8 @@ main {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  padding: 12px 10px;
+  margin-bottom: 0.5rem;
 
   &__text {
     &-title {
@@ -53,13 +55,13 @@ main {
       border-radius: 2rem;
       border: solid 1px #3f9c88;
       background: transparent;
+      color: #3f9c88;
+      font-weight: 600;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 
-      &-icon {
-        color: #3f9c88;
-      }
-
-      &-text {
-        color: #3f9c88;
+      &:hover {
+        background: rgba(63, 156, 136, 0.12);
+        transform: translateY(-1px);
       }
     }
   }
@@ -73,13 +75,19 @@ main {
   max-height: 77px;
   background-color: #242525;
   border-radius: 16px;
-  padding: 16px 0;
+  padding: 16px 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  }
 
   &__icon {
     min-height: 45px;
     min-width: 45px;
     border-radius: 10px;
-    margin: 0 1rem;
+    margin: 0 1rem 0 0.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,54 +119,60 @@ main {
   min-height: 320px;
   height: 60vh;
   max-height: 480px;
-  
+  padding: 10px 0;
+
   .chart-box__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-  
+
     &-title {
       font-size: 1.4rem;
       font-weight: 600;
       color: white;
     }
   }
-  
+
   .chart-box__legend {
     display: flex;
     gap: 1rem;
   }
-  
+
   .legend-btn {
     display: flex;
     color: white;
     align-items: center;
     gap: 0.4rem;
     background: transparent;
-    border: none;
+    border: 1px solid transparent;
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 500;
     padding: 0.3rem 0.6rem;
     border-radius: 6px;
-    transition: background 0.2s ease;
-  
+    transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+
     &:hover {
       background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-1px);
     }
   }
-  
+
+  .legend-btn--inactive {
+    opacity: 0.45;
+  }
+
   .legend-color {
     width: 14px;
     height: 14px;
     border-radius: 4px;
     display: inline-block;
-  
+
     &--learning {
       background: #22c55e;
     }
-  
+
     &--challenge {
       background: #f59e0b;
     }
@@ -168,6 +182,7 @@ main {
     display: flex;
     height: 100%;
     min-width: 100%;
+    gap: 1rem;
     &-chart {
       height: 100%;
       width: 100%;
@@ -192,18 +207,18 @@ main {
     border-radius: 12px;
     height: fit-content;
   }
-  
+
   .kpi-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .kpi-label {
     color: #a4a5a4;
     font-size: 0.9rem;
   }
-  
+
   .kpi-value {
     color: #f4f5f5;
     font-size: 1.4rem;
@@ -213,26 +228,45 @@ main {
 
 /* RECENT COURSES */
 .recent-courses-box {
+  padding: 10px 0;
   &__header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
 
     &-title {
       color: #fbfafb;
+      margin: 0;
     }
 
     &-button {
       color: #3ea08e;
       background: transparent;
-      border: none;
+      border: 1px solid #3ea08e;
+      padding: 6px 12px;
+      border-radius: 999px;
+      transition: transform 0.2s ease, background 0.2s ease;
+
+      &:hover {
+        background: rgba(62, 160, 142, 0.12);
+        transform: translateY(-1px);
+      }
     }
   }
+}
+
+.recent-courses-box_items {
+  display: flex;
+  flex-direction: column;
 }
 
 .course-item {
   max-height: 200px;
   display: flex;
-  padding: 20px;
+  gap: 16px;
+  padding: 12px 0;
+  width: 100%;
 
   &__image {
     max-height: 120px;
@@ -243,6 +277,8 @@ main {
   }
 
   &__content {
+    flex: 1;
+    min-width: 0;
     &-header {
       display: flex;
       flex-direction: column;
@@ -266,12 +302,30 @@ main {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      &-progress {
-        font-size: 0.8rem;
-        color: lightgrey;
-        margin: 0;
-        padding: 0;
-      }
+      width: 100%;
     }
   }
+}
+
+.course-progress {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  width: 100%;
+}
+
+.course-progress__bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #22c55e, #3ea08e);
+  transition: width 0.3s ease;
+}
+
+.course-progress__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: lightgrey;
+  margin-top: 6px;
 }

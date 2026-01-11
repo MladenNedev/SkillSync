@@ -89,7 +89,7 @@ SkillSync/
     ├── nginx/
     ├── php/
     ├── mysql/
-    └── docker-compose.yml
+    └── compose.yml
 
 ---
 
@@ -108,18 +108,34 @@ Laravel API | http://localhost:8080
 phpMyAdmin | http://localhost:8081
 Vue SPA | http://localhost:5173
 
-### Laravel Setup
+### Laravel Setup (First Run)
 
 ```bash
-cd api
-cp .env.example .env
+cd infra
+docker compose up -d
+docker compose exec php composer install
+cp ../api/.env.example ../api/.env
+docker compose exec php php artisan key:generate
+docker compose exec php php artisan migrate --seed
 ```
 
-Update environment variables, then run:
+Ensure the API `.env` contains:
 
 ```bash
-docker compose exec php sh -lc "cd /var/www/html && php artisan key:generate"
-docker compose exec php sh -lc "cd /var/www/html && php artisan migrate --seed"
+APP_URL=http://localhost:8080
+FRONTEND_URL=http://localhost:5173
+SANCTUM_STATEFUL_DOMAINS=localhost:5173
+SESSION_DOMAIN=localhost
+DB_HOST=db
+DB_DATABASE=skillsync
+DB_USERNAME=skillsync
+DB_PASSWORD=skillsync
+```
+
+If you edit `.env` after containers are running:
+
+```bash
+docker compose exec php php artisan config:clear
 ```
 
 ### Frontend Setup
@@ -132,7 +148,9 @@ npm run dev
 ```
 
 Ensure the SPA .env contains:
+```bash
 VITE_API_BASE_URL=http://localhost:8080
+```
 
 ---
 

@@ -10,6 +10,21 @@ const chartData = ref(null)
 const recentCourses = ref([])
 const loading = ref(true)
 const error = ref(null)
+const showLearning = ref(true)
+const showChallenge = ref(true)
+
+function clampPercent(value) {
+  const number = Number(value ?? 0)
+  if (Number.isNaN(number)) return 0
+  return Math.min(Math.max(number, 0), 100)
+}
+
+function formatHoursDisplay(value) {
+  const number = Number(value ?? 0)
+  if (Number.isNaN(number)) return '0'
+  const rounded = Math.round(number * 2) / 2
+  return Number.isInteger(rounded) ? `${rounded}` : rounded.toFixed(1)
+}
 
 function formatMinutesToHoursMinutes(totalMinutes) {
   if (totalMinutes == null) return '00 h 00 m'
@@ -29,6 +44,27 @@ const formattedTimeSpentToday = computed(() => {
   const minutes = summary.value.stats.time_spent_today_minutes
   return formatMinutesToHoursMinutes(minutes)
 })
+
+const chartDataForDisplay = computed(() => {
+  if (!chartData.value) return null
+
+  return {
+    ...chartData.value,
+    course_hours: showLearning.value ? chartData.value.course_hours : [],
+    challenge_hours: showChallenge.value ? chartData.value.challenge_hours : [],
+  }
+})
+
+function toggleDataset(type) {
+  if (type === 'learning') {
+    if (showLearning.value && !showChallenge.value) return
+    showLearning.value = !showLearning.value
+    return
+  }
+
+  if (showChallenge.value && !showLearning.value) return
+  showChallenge.value = !showChallenge.value
+}
 
 onMounted(async () => {
   loading.value = true
@@ -118,7 +154,7 @@ onMounted(async () => {
             </p>
           </div>
           <div class="welcome-box__scope-selector">
-            <button>Weekly</button>
+            <button class="welcome-box__scope-selector-button">Weekly</button>
           </div>
         </div>
       </div>
@@ -189,12 +225,24 @@ onMounted(async () => {
             <h1 class="chart-box__header-title">Spent Hours</h1>
 
             <div class="chart-box__legend">
-              <button class="legend-btn legend-btn--learning">
+              <button
+                class="legend-btn legend-btn--learning"
+                :class="{ 'legend-btn--inactive': !showLearning }"
+                type="button"
+                :aria-pressed="showLearning"
+                @click="toggleDataset('learning')"
+              >
                 <span class="legend-color legend-color--learning"></span>
                 Learning
               </button>
 
-              <button class="legend-btn legend-btn--challenge">
+              <button
+                class="legend-btn legend-btn--challenge"
+                :class="{ 'legend-btn--inactive': !showChallenge }"
+                type="button"
+                :aria-pressed="showChallenge"
+                @click="toggleDataset('challenge')"
+              >
                 <span class="legend-color legend-color--challenge"></span>
                 Challenge
               </button>
@@ -203,28 +251,28 @@ onMounted(async () => {
 
           <div class="chart-box__content">
             <div class="chart-box__content-chart">
-              <DashboardChart :chart-data="chartData" />
+              <DashboardChart :chart-data="chartDataForDisplay" />
             </div>
 
             <aside class="weekly-metrics">
               <div class="kpi-item">
                 <span class="kpi-label">Total hours this week</span>
-                <strong class="kpi-value">{{ summary.weekly.total_hours.toFixed(1) }}</strong>
+                <strong class="kpi-value">{{ formatHoursDisplay(summary.weekly.total_hours) }}</strong>
               </div>
 
               <div class="kpi-item">
                 <span class="kpi-label">Average per day</span>
-                <strong class="kpi-value">{{ summary.weekly.average_hours_per_day.toFixed(2) }}</strong>
+                <strong class="kpi-value">{{ formatHoursDisplay(summary.weekly.average_hours_per_day) }}</strong>
               </div>
 
               <div class="kpi-item">
                 <span class="kpi-label">Course hours</span>
-                <strong class="kpi-value">{{ summary.weekly.course_hours.toFixed(1) }}</strong>
+                <strong class="kpi-value">{{ formatHoursDisplay(summary.weekly.course_hours) }}</strong>
               </div>
 
               <div class="kpi-item">
                 <span class="kpi-label">Challenge hours</span>
-                <strong class="kpi-value">{{ summary.weekly.challenge_hours.toFixed(1) }}</strong>
+                <strong class="kpi-value">{{ formatHoursDisplay(summary.weekly.challenge_hours) }}</strong>
               </div>
             </aside>
           </div>
@@ -247,7 +295,16 @@ onMounted(async () => {
                   </div>
 
                   <div class="course-item__content-footer">
-                    <p class="course-item__content-footer-progress">Progress</p>
+                    <div class="course-progress">
+                      <div
+                        class="course-progress__bar"
+                        :style="{ width: `${clampPercent(course.progress_percent)}%` }"
+                      ></div>
+                    </div>
+                    <div class="course-progress__meta">
+                      <span>Progress</span>
+                      <span>{{ clampPercent(course.progress_percent) }}%</span>
+                    </div>
                   </div>
                 </div>
               </div>

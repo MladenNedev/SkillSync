@@ -1,8 +1,10 @@
 # === Laravel (api) ===
 api/vendor/
 api/node_modules/
-api/storage/
-api/bootstrap/cache/
+api/storage/*
+!api/storage/gitkeep
+api/bootstrap/cache/*
+!api/bootstrap/cache/.gitkeep
 api/.env
 api/.env.local
 api/.env.production
@@ -11,10 +13,10 @@ api/public/storage
 api/storage/*.key
 
 # Laravel logs
-api/storage/logs/
-api/storage/framework/cache/
-api/storage/framework/sessions/
-api/storage/framework/views/
+api/storage/logs/*
+api/storage/framework/*
+!api/storage/framework/.gitkeep
+!api/storage/logs/gitkeep
 
 # === Vue SPA (web) ===
 web/node_modules/
